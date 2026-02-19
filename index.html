@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>명리 정밀 분석 시스템</title>
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
+    <style>
+        :root { --dark-bg: #0f0f0f; --card-bg: #1a1a1a; --accent: #bb86fc; --text: #e0e0e0; }
+        body { background-color: var(--dark-bg); color: var(--text); font-family: 'Pretendard', sans-serif; display: flex; justify-content: center; padding: 40px 20px; }
+        .container { max-width: 800px; width: 100%; }
+        h1 { color: #fff; text-align: center; margin-bottom: 30px; letter-spacing: 2px; }
+        .input-card { background: var(--card-bg); padding: 30px; border-radius: 12px; border: 1px solid #333; margin-bottom: 30px; text-align: center; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 10px; color: var(--accent); font-weight: bold; }
+        input[type="date"], input[type="time"] { padding: 12px; border-radius: 6px; border: 1px solid #444; background: #000; color: #fff; font-size: 1.1rem; margin: 5px; text-align: center; }
+        .options { margin-bottom: 20px; color: #aaa; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        button { width: 80%; padding: 15px; background: var(--accent); border: none; color: #000; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 1.1rem; transition: 0.3s; }
+        button:hover { background: #d7bbff; }
+        #result { background: var(--card-bg); padding: 40px; border-radius: 12px; display: none; line-height: 1.9; white-space: pre-wrap; border: 1px solid #333; margin-top: 20px; }
+        .loading { text-align: center; display: none; color: var(--accent); margin: 20px 0; font-style: italic; }
+        h2 { color: var(--accent); border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 35px; }
+        .saju-box { background: #000; padding: 15px; border-radius: 8px; color: #ffbd44; font-weight: bold; margin-bottom: 25px; border: 1px solid #ffbd44; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>命理 精密 分析</h1>
+    <div class="input-card">
+        <div class="input-group">
+            <label>생년월일 및 시간 선택</label>
+            <input type="date" id="birthDate">
+            <input type="time" id="birthTime">
+        </div>
+        <div class="options">
+            <input type="checkbox" id="noTime" onchange="document.getElementById('birthTime').disabled = this.checked"> 
+            <label for="noTime" style="cursor:pointer;">태어난 시간을 모릅니다</label>
+        </div>
+        <button onclick="runAnalysis()">데이터 정밀 분석 실행</button>
+    </div>
+    <div id="loading" class="loading">📡 운명의 데이터를 해독 중입니다... (최대 1분 소요)</div>
+    <div id="result"></div>
+</div>
+
+<script>
+    // ⚠️ [중요] Render 대시보드 상단의 주소를 여기에 붙여넣으세요! 
+    // 주소 끝에 반드시 /analyze 를 붙여야 합니다.
+    const RENDER_SERVER_URL = "https://saju-wcqn.onrender.com/analyze";
+
+    window.runAnalysis = async function() {
+        const dateInput = document.getElementById('birthDate').value;
+        const timeInput = document.getElementById('birthTime').value;
+        const noTime = document.getElementById('noTime').checked;
+        const resultDiv = document.getElementById('result');
+        const loading = document.getElementById('loading');
+
+        if (!dateInput) return alert("날짜를 선택해주세요.");
+        if (!noTime && !timeInput) return alert("시간을 입력하거나 '시간 모름'을 체크해주세요.");
+
+        loading.style.display = 'block';
+        resultDiv.style.display = 'none';
+
+        try {
+            // 1. 만세력 계산
+            const [y, m, d] = dateInput.split('-').map(Number);
+            let hh = 0, mm = 0;
+            if (!noTime) [hh, mm] = timeInput.split(':').map(Number);
+
+            const solar = Solar.fromYmdHms(y, m, d, hh, mm, 0);
+            const eightChar = solar.getLunar().getEightChar();
+            const sajuStr = `[년주] ${eightChar.getYear()}${eightChar.getYearZhi()} [월주] ${eightChar.getMonth()}${eightChar.getMonthZhi()} [일주] ${eightChar.getDay()}${eightChar.getDayZhi()} [시주] ${noTime ? '생시불명' : eightChar.getTimeGan() + eightChar.getTimeZhi()}`;
+
+            // 2. 백엔드 서버(Render)로 요청
+            const response = await fetch(RENDER_SERVER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sajuStr: sajuStr })
+            });
+
+            if (!response.ok) throw new Error("서버 응답 실패");
+
+            const data = await response.json();
+            
+            // 3. 결과 표시 및 포맷팅
+            resultDiv.innerHTML = `<div class="saju-box">${sajuStr}</div>` + 
+                                  data.text.replace(/## /g, '<h2>').replace(/##/g, '');
+            resultDiv.style.display = 'block';
+
+        } catch (e) {
+            console.error(e);
+            alert("분석 서버가 깨어나는 중일 수 있습니다. 1분만 기다렸다가 다시 '실행' 버튼을 눌러주세요!");
+        } finally {
+            loading.style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>
