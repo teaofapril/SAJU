@@ -13,7 +13,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 app.post('/analyze', async (req, res) => {
   try {
     const { sajuStr } = req.body;
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
     const promptText = `명리학자로서 사주 데이터: ${sajuStr}를 정밀 분석하라.
     2026년 운세 중심으로, 고정된 비유(흑룡, 장미) 없이 이 원국에 맞는 새로운 자연 비유를 창조하라.
@@ -31,5 +31,6 @@ app.post('/analyze', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => console.log(`Server is running!`));
+
 
 
