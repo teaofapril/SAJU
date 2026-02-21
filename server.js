@@ -7,7 +7,10 @@ app.use(cors());
 app.use(express.json());
 
 // 🔐 [보안 준수] API 키는 절대 코드에 직접 적지 않고 환경 변수에서 가져옵니다.
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ 
+  model: "gemini-1.5-flash", // models/ 없이 이름만!
+  apiVersion: 'v1beta'       // 명시적으로 v1beta를 지정하면 404를 피할 확률이 높습니다.
+});
 
 app.get('/', (req, res) => {
     res.send('치코리타님의 유료 서버가 최신 보안 규격으로 가동 중입니다! 🐉');
@@ -43,6 +46,7 @@ app.post('/analyze', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Secure Server running on port ${PORT}`));
+
 
 
 
