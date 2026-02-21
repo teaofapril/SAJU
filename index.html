@@ -31,7 +31,7 @@
 
             try {
                 // ✅ 주소가 정확한지 확인 (백엔드 주소)
-                const res = await fetch("https://saju-backend-6c73.onrender.com/analyze", {
+                const res = await fetch("https://saju-tier1-api.onrender.com/analyze", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ sajuStr: d + " " + t })
@@ -47,3 +47,4 @@
     </script>
 </body>
 </html>
+
