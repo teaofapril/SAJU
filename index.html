@@ -3,91 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>운명의 기록 : AI 사주 솔루션</title>
-    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
+    <title>DESTINY LOG : AI 사주</title>
     <style>
         body { 
-            margin: 0;
-            background-color: #000 !important; 
-            /* 은은한 용의 형상 - 고급스러운 수묵화 스타일 */
+            margin: 0; padding: 0;
+            background-color: #000;
+            /* 은은하고 신비로운 용의 실루엣 배경 */
             background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
-                              url('https://images.unsplash.com/photo-1615678815958-5910c6811c25?q=80&w=2000') !important;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #e0e0e0; 
-            font-family: 'Pretendard', sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            padding: 40px 20px;
+                              url('https://images.unsplash.com/photo-1615678815958-5910c6811c25?q=80&w=2000');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: #fff; font-family: 'Pretendard', sans-serif;
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
         }
-        .container { max-width: 600px; width: 100%; z-index: 1; }
-        h1 { text-align: center; letter-spacing: 5px; font-weight: 200; color: #fff; margin-bottom: 50px; }
-        .input-card { 
-            background: rgba(15, 15, 15, 0.95); 
-            padding: 40px; border-radius: 0; border: 1px solid #333; 
-            text-align: center; backdrop-filter: blur(10px);
+        .card { 
+            background: rgba(15, 15, 15, 0.95); padding: 40px; border: 1px solid #333; 
+            text-align: center; width: 90%; max-width: 450px; backdrop-filter: blur(10px);
         }
-        input { 
-            padding: 12px; background: #111; border: 1px solid #444; color: #fff; margin: 5px; outline: none;
-        }
+        h1 { letter-spacing: 8px; font-weight: 200; margin-bottom: 40px; }
+        input { padding: 12px; margin: 10px; background: #111; border: 1px solid #444; color: #fff; outline: none; }
         button { 
-            width: 100%; padding: 15px; background: #fff; color: #000; border: none; 
-            font-weight: bold; cursor: pointer; margin-top: 20px; letter-spacing: 2px;
+            width: 100%; padding: 15px; background: #fff; color: #000; 
+            border: none; font-weight: bold; cursor: pointer; margin-top: 20px; letter-spacing: 3px;
         }
-        #result { 
-            background: rgba(10, 10, 10, 0.9); padding: 30px; border: 1px solid #333; 
-            margin-top: 20px; display: none; line-height: 1.8; white-space: pre-wrap;
-        }
-        .loading { display: none; text-align: center; margin-top: 20px; color: #888; }
+        #result { margin-top: 30px; text-align: left; line-height: 1.8; white-space: pre-wrap; display: none; padding: 20px; border-top: 1px solid #333; }
+        .loading { display: none; margin-top: 20px; color: #888; }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>DESTINY LOG</h1>
-    <div class="input-card">
-        <label style="display:block; margin-bottom:20px;">당신이 태어난 순간</label>
-        <input type="date" id="birthDate">
-        <input type="time" id="birthTime">
-        <button onclick="runAnalysis()">ANALYZE</button>
+    <div class="card">
+        <h1>DESTINY LOG</h1>
+        <p style="font-size: 0.9rem; color: #888; margin-bottom: 30px;">당신이 태어난 순간을 입력하십시오</p>
+        <input type="date" id="date">
+        <input type="time" id="time">
+        <button onclick="sendAnalysis()">ANALYZE</button>
+        <div id="loading" class="loading">우주의 기운을 해독하는 중...</div>
+        <div id="result"></div>
     </div>
-    <div id="loading" class="loading">해독 중...</div>
-    <div id="result"></div>
-</div>
 
-async function send() {
-    const date = document.getElementById('date').value;
-    const time = document.getElementById('time').value;
-    const resultDiv = document.getElementById('result');
-    const loading = document.getElementById('loading');
+    <script>
+        async function sendAnalysis() {
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const resultDiv = document.getElementById('result');
+            const loading = document.getElementById('loading');
 
-    if(!date) return alert("날짜를 선택하세요!");
+            if(!date) return alert("날짜를 선택해 주세요.");
 
-    loading.style.display = 'block';
-    resultDiv.style.display = 'none';
+            loading.style.display = 'block';
+            resultDiv.style.display = 'none';
 
-    try {
-        console.log("분석 시작... 주소: https://saju-backend-6c73.onrender.com/analyze"); //
-        
-        const res = await fetch("https://saju-backend-6c73.onrender.com/analyze", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sajuStr: date + " " + time })
-        });
+            try {
+                // 백엔드 서버(saju-backend-6c73)와 통신 시도
+                const res = await fetch("https://saju-backend-6c73.onrender.com/analyze", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ sajuStr: date + " " + time + " 생의 사주 분석" })
+                });
 
-        // 만약 응답이 성공이 아니면 에러를 던짐
-        if (!res.ok) {
-            const errorBody = await res.text();
-            throw new Error(`서버 상태: ${res.status}, 내용: ${errorBody}`);
+                if(!res.ok) throw new Error("서버 응답에 실패했습니다.");
+
+                const data = await res.json();
+                resultDiv.innerText = data.text;
+                resultDiv.style.display = 'block';
+            } catch (e) {
+                console.error(e);
+                alert("연결 실패: 서버가 깨어나는 중일 수 있습니다. 1분 뒤 다시 시도해 주세요.");
+            } finally {
+                loading.style.display = 'none';
+            }
         }
-
-        const data = await res.json();
-        resultDiv.innerText = data.text;
-        resultDiv.style.display = 'block';
-    } catch (e) {
-        console.error("상세 에러:", e); //
-        alert("연결 실패 상세 원인: " + e.message); 
-    } finally {
-        loading.style.display = 'none';
-    }
-}
+    </script>
+</body>
+</html>
