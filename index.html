@@ -1,67 +1,47 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DESTINY LOG</title>
     <style>
-        body { 
-            margin: 0; background-color: #000; 
-            /* 더 안정적인 배경 이미지 주소로 교체했습니다 */
-            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                              url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2000');
-            background-size: cover; background-position: center; background-attachment: fixed;
-            color: #fff; font-family: 'Apple SD Gothic Neo', sans-serif; 
-            display: flex; justify-content: center; align-items: center; min-height: 100vh;
-        }
-        .card { background: rgba(0,0,0,0.85); padding: 40px; border: 1px solid #444; text-align: center; width: 90%; max-width: 400px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,1); }
-        h1 { letter-spacing: 5px; font-weight: 300; margin-bottom: 30px; }
-        input { width: 80%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #333; color: #fff; border-radius: 5px; }
-        button { width: 88%; padding: 15px; background: #fff; color: #000; border: none; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        button:hover { background: #ccc; }
-        #result { margin-top: 20px; text-align: left; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 5px; line-height: 1.8; white-space: pre-wrap; display: none; }
+        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; padding-top: 50px; }
+        .card { border: 1px solid #333; padding: 20px; display: inline-block; background: #111; }
+        input { margin: 10px; padding: 10px; }
+        button { padding: 10px 20px; cursor: pointer; background: #fff; border: none; font-weight: bold; }
+        #result { margin-top: 20px; white-space: pre-wrap; text-align: left; max-width: 500px; display: inline-block; }
     </style>
 </head>
 <body>
     <div class="card">
         <h1>DESTINY LOG</h1>
-        <p style="color: #888; font-size: 0.9em;">당신이 태어난 순간을 입력하십시오</p>
-        <input type="date" id="date">
-        <input type="time" id="time">
-        <button onclick="send()">ANALYZE</button>
-        <div id="loading" style="display:none; margin-top:20px; color: #aaa;">✨ 우주의 기운을 읽는 중...</div>
+        <input type="date" id="d"><input type="time" id="t"><br>
+        <button onclick="ask()">ANALYZE</button>
+        <div id="loading" style="display:none;">운명 분석 중...</div>
         <div id="result"></div>
     </div>
 
     <script>
-        async function send() {
-            const date = document.getElementById('date').value;
-            const time = document.getElementById('time').value;
-            const resultDiv = document.getElementById('result');
-            const loading = document.getElementById('loading');
-
-            if(!date) return alert("날짜를 선택하세요!");
-
-            loading.style.display = 'block';
-            resultDiv.style.display = 'none';
+        async function ask() {
+            const d = document.getElementById('d').value;
+            const t = document.getElementById('t').value;
+            if(!d) return alert("날짜 입력!");
+            
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').innerText = '';
 
             try {
-                // 백엔드 주소가 정확한지 다시 한번 확인!
+                // ✅ 주소가 정확한지 확인 (백엔드 주소)
                 const res = await fetch("https://saju-backend-6c73.onrender.com/analyze", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ sajuStr: date + " " + time })
+                    body: JSON.stringify({ sajuStr: d + " " + t })
                 });
-
-                if(!res.ok) throw new Error("서버 응답 실패");
-
                 const data = await res.json();
-                resultDiv.innerText = data.text;
-                resultDiv.style.display = 'block';
+                document.getElementById('result').innerText = data.text || "결과 없음";
             } catch (e) {
-                alert("연결 실패: " + e.message + "\n백엔드 서버가 깨어나는 중일 수 있습니다. 30초 후 다시 시도해 주세요.");
+                alert("연결 에러: " + e.message);
             } finally {
-                loading.style.display = 'none';
+                document.getElementById('loading').style.display = 'none';
             }
         }
     </script>
