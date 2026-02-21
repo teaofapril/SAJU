@@ -66,14 +66,12 @@ async function sendAnalysis() {
         const data = await res.json();
         resultDiv.innerText = data.text;
         resultDiv.style.display = 'block';
-    } catch (e) {
-        // ✅ 에러가 나면 1분 후라고 하지 말고 "진짜 이유"를 보여달라고 합시다.
-        alert("에러 발생: " + e.message); 
-    } finally {
-        loading.style.display = 'none';
-    }
+// index.html의 catch 부분을 이렇게 바꿔보세요.
+} catch (e) {
+    alert("지금 이 메시지가 보이면 코드가 새로 배포된 겁니다! 사유: " + e.message);
 }
     </script>
 </body>
 </html>
+
 
