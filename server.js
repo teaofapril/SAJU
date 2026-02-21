@@ -19,7 +19,7 @@ app.post('/analyze', async (req, res) => {
 
         // 🚀 [에러 방지] 모델 이름 앞에 'models/'를 명시하거나 최신 이름을 사용합니다.
         // Tier 1 등급에서 가장 안정적인 1.5-flash 모델을 명시적 경로로 호출합니다.
-       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
         
         const prompt = `사주 명리학 전문가로서 다음 정보를 분석해줘: ${sajuStr}. 한국어로 친절하게 설명해줘.`;
 
@@ -43,5 +43,6 @@ app.post('/analyze', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Secure Server running on port ${PORT}`));
+
 
 
