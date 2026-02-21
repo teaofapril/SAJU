@@ -9,10 +9,10 @@ app.use(express.json());
 // 1. 구글 AI 초기화 (치코리타님의 여의주 장착)
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY); //
 
-// 2. 모델 설정 (models/ 없이 깔끔하게 설정)
+// 'models/'를 붙여서 모델의 전체 경로를 명시해주는 것이 구글의 최신 정석입니다.
 const model = genAI.getGenerativeModel({ 
-    model: "gemini-1.5-flash" 
-}); //
+    model: "models/gemini-1.5-flash" 
+});
 
 app.post('/analyze', async (req, res) => {
     try {
@@ -39,3 +39,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`서버가 포트 ${PORT}에서 힘차게 돌아가고 있습니다!`);
 });
+
