@@ -26,7 +26,7 @@ app.post('/analyze', async (req, res) => {
         }
 
         // ✅ Tier 1 등급에서 가장 똑똑한 1.5-pro 모델 사용
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         
         // ✅ 시간이 없을 때를 대비한 맞춤형 프롬프트
         const prompt = `
@@ -57,3 +57,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
