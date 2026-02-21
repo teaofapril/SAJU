@@ -17,15 +17,25 @@ app.get('/', (req, res) => {
 app.post('/analyze', async (req, res) => {
     try {
         const { sajuStr } = req.body;
+        if (!sajuStr || sajuStr.trim() === "") {
+            return res.json({ text: "입력된 정보가 없습니다. 날짜와 시간을 확인해주세요." });
+        }
+        
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-        const result = await model.generateContent(sajuStr + " 이 사주를 아주 상세하게 풀이해줘.");
+        // 질문을 더 명확하게 수정
+        const prompt = `생년월일시: ${sajuStr}. 이 사람의 사주와 신년 운세를 아주 친절하고 상세하게 한국어로 설명해줘.`;
+        
+        const result = await model.generateContent(prompt);
         const response = await result.response;
-        res.json({ text: response.text() });
+        const text = response.text();
+        
+        res.json({ text: text || "AI가 분석 내용을 생성하지 못했습니다. 잠시 후 다시 시도해주세요." });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "AI 분석 실패" });
+        res.status(500).json({ text: "AI 통신 에러: " + error.message });
     }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
