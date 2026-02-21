@@ -55,36 +55,39 @@
     <div id="result"></div>
 </div>
 
-<script>
-    async function runAnalysis() {
-        const date = document.getElementById('birthDate').value;
-        const time = document.getElementById('birthTime').value;
-        if (!date) return alert("날짜를 입력하세요.");
+async function send() {
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+    const resultDiv = document.getElementById('result');
+    const loading = document.getElementById('loading');
 
-        const resultDiv = document.getElementById('result');
-        const loading = document.getElementById('loading');
+    if(!date) return alert("날짜를 선택하세요!");
+
+    loading.style.display = 'block';
+    resultDiv.style.display = 'none';
+
+    try {
+        console.log("분석 시작... 주소: https://saju-backend-6c73.onrender.com/analyze"); //
         
-        loading.style.display = 'block';
-        resultDiv.style.display = 'none';
+        const res = await fetch("https://saju-backend-6c73.onrender.com/analyze", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sajuStr: date + " " + time })
+        });
 
-        try {
-            // 백엔드 주소 (saju-backend-6c73)
-            const response = await fetch("https://saju-backend-6c73.onrender.com/analyze", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ sajuStr: date + " " + time + " 생의 사주분석" })
-            });
-
-            if (!response.ok) throw new Error("서버 응답 실패");
-            const data = await response.json();
-            resultDiv.innerText = data.text;
-            resultDiv.style.display = 'block';
-        } catch (e) {
-            alert("연결 실패: 서버가 깨어나는 중일 수 있습니다. 30초 뒤에 다시 시도해주세요.");
-        } finally {
-            loading.style.display = 'none';
+        // 만약 응답이 성공이 아니면 에러를 던짐
+        if (!res.ok) {
+            const errorBody = await res.text();
+            throw new Error(`서버 상태: ${res.status}, 내용: ${errorBody}`);
         }
+
+        const data = await res.json();
+        resultDiv.innerText = data.text;
+        resultDiv.style.display = 'block';
+    } catch (e) {
+        console.error("상세 에러:", e); //
+        alert("연결 실패 상세 원인: " + e.message); 
+    } finally {
+        loading.style.display = 'none';
     }
-</script>
-</body>
-</html>
+}
