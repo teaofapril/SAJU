@@ -13,10 +13,20 @@
             --text: #e0e0e0; 
         }
 
-        body { 
-    background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
-                      url('https://images.unsplash.com/photo-1578308818056-121689252c2a?q=80&w=2000'); 
-    /* 수묵화 느낌의 신비로운 동양적 배경 */
+body { 
+    margin: 0;
+    padding: 40px 20px;
+    background-color: #000; 
+    /* 은은한 동양적 용 배경 (Unsplash 최신 고화질) */
+    background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
+                      url('https://images.unsplash.com/photo-1635314955030-02558f96e459?q=80&w=2000');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #e0e0e0; 
+    font-family: 'Pretendard', sans-serif; 
+    display: flex; 
+    justify-content: center; 
 }
 
         .container { max-width: 800px; width: 100%; position: relative; z-index: 1; }
@@ -165,4 +175,5 @@
 </script>
 </body>
 </html>
+
 
