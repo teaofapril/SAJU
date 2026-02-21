@@ -22,29 +22,34 @@
 
     <script>
         async function ask() {
-            const d = document.getElementById('d').value;
-            const t = document.getElementById('t').value;
-            if(!d) return alert("날짜 입력!");
-            
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('result').innerText = '';
+    const d = document.getElementById('d').value;
+    const t = document.getElementById('t').value;
+    
+    if(!d) return alert("생년월일을 입력해주세요!");
+    
+    // ✅ 시간이 없으면 "시간 모름"으로 처리
+    const timeText = t ? t : "시간 모름 (삼주 분석)";
+    const sajuData = `생년월일: ${d}, 태어난 시간: ${timeText}`;
 
-            try {
-                // ✅ 주소가 정확한지 확인 (백엔드 주소)
-                const res = await fetch("https://saju-tier1-api.onrender.com/analyze", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ sajuStr: d + " " + t })
-                });
-                const data = await res.json();
-                document.getElementById('result').innerText = data.text || "결과 없음";
-            } catch (e) {
-                alert("연결 에러: " + e.message);
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-            }
-        }
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('result').innerText = '';
+
+    try {
+        const res = await fetch("https://saju-tier1-api.onrender.com/analyze", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sajuStr: sajuData })
+        });
+        const data = await res.json();
+        document.getElementById('result').innerText = data.text || "결과를 가져오지 못했습니다.";
+    } catch (e) {
+        alert("연결 에러: " + e.message);
+    } finally {
+        document.getElementById('loading').style.display = 'none';
+    }
+}
     </script>
 </body>
 </html>
+
 
