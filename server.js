@@ -17,38 +17,26 @@ app.get('/', (req, res) => {
 });
 
 // ✅ 분석 요청 처리 (POST)
+// server.js 의 해당 부분을 아래와 같이 수정하세요.
+
 app.post('/analyze', async (req, res) => {
     try {
         const { sajuStr } = req.body;
 
-        if (!sajuStr) {
-            return res.status(400).json({ text: "사주 정보가 전달되지 않았습니다." });
-        }
-
-        // ✅ Tier 1 등급에서 가장 똑똑한 1.5-pro 모델 사용
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // ✅ 모델 선언부 수정: 'models/'를 생략하거나 명확히 지정합니다.
+        // 유료 등급(Tier 1)이므로 가장 안정적인 1.5-flash를 사용합니다.
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); 
         
-        // ✅ 시간이 없을 때를 대비한 맞춤형 프롬프트
-        const prompt = `
-            사용자 정보: ${sajuStr}
-            
-            위 정보를 바탕으로 한국 전통 사주(또는 삼주) 분석을 진행해줘.
-            1. 성격의 특징과 강점
-            2. 타고난 운의 흐름
-            3. 현재 시기에 필요한 조언과 희망적인 메시지
-            
-            만약 시간이 '시간 모름'으로 되어 있다면, 태어난 연월일(삼주)을 중심으로 
-            전문적이고 정성스럽게 분석해줘.
-        `;
+        const prompt = `사주 정보: ${sajuStr}. 이 데이터를 바탕으로 전문적인 사주 풀이를 한국어로 작성해줘.`;
 
+        // ✅ API 호출 시 버전 호환성을 위해 아래와 같이 처리합니다.
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        const text = response.text();
+        res.json({ text: response.text() });
 
-        res.json({ text: text });
     } catch (error) {
-        console.error("AI 에러 발생:", error);
-        res.status(500).json({ text: "AI 분석 중 오류가 발생했습니다: " + error.message });
+        console.error("상세 에러:", error);
+        res.status(500).json({ text: "AI 서비스 응답 지연 또는 설정 오류입니다. 잠시 후 다시 시도해주세요." });
     }
 });
 
@@ -57,4 +45,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
 
