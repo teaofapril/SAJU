@@ -40,38 +40,40 @@
         <div id="result"></div>
     </div>
 
-    <script>
-        async function sendAnalysis() {
-            const date = document.getElementById('date').value;
-            const time = document.getElementById('time').value;
-            const resultDiv = document.getElementById('result');
-            const loading = document.getElementById('loading');
+async function sendAnalysis() {
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+    const resultDiv = document.getElementById('result');
+    const loading = document.getElementById('loading');
 
-            if(!date) return alert("날짜를 선택해 주세요.");
+    if(!date) return alert("날짜를 선택해 주세요.");
 
-            loading.style.display = 'block';
-            resultDiv.style.display = 'none';
+    loading.style.display = 'block';
+    resultDiv.style.display = 'none';
 
-            try {
-                // 백엔드 서버(saju-backend-6c73)와 통신 시도
-                const res = await fetch("https://saju-backend-6c73.onrender.com/analyze", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ sajuStr: date + " " + time + " 생의 사주 분석" })
-                });
+    // ✅ 이 주소가 치코리타님이 직접 들어가서 확인한 그 주소와 100% 일치해야 합니다!
+    const BACKEND_URL = "https://saju-backend-6c73.onrender.com/analyze";
 
-                if(!res.ok) throw new Error("서버 응답에 실패했습니다.");
+    try {
+        const res = await fetch(BACKEND_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sajuStr: date + " " + time })
+        });
 
-                const data = await res.json();
-                resultDiv.innerText = data.text;
-                resultDiv.style.display = 'block';
-            } catch (e) {
-                console.error(e);
-                alert("연결 실패: 서버가 깨어나는 중일 수 있습니다. 1분 뒤 다시 시도해 주세요.");
-            } finally {
-                loading.style.display = 'none';
-            }
-        }
+        if(!res.ok) throw new Error("서버 응답 실패");
+
+        const data = await res.json();
+        resultDiv.innerText = data.text;
+        resultDiv.style.display = 'block';
+    } catch (e) {
+        // ✅ 에러가 나면 1분 후라고 하지 말고 "진짜 이유"를 보여달라고 합시다.
+        alert("에러 발생: " + e.message); 
+    } finally {
+        loading.style.display = 'none';
+    }
+}
     </script>
 </body>
 </html>
+
