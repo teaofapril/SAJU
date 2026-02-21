@@ -8,16 +8,18 @@
     <style>
         :root { 
             --dark-bg: #000000; 
-            --card-bg: rgba(15, 15, 15, 0.9); 
+            --card-bg: rgba(10, 10, 10, 0.85); 
             --accent: #ffffff; 
             --text: #e0e0e0; 
         }
 
         body { 
+            margin: 0;
+            padding: 40px 20px;
             background-color: var(--dark-bg); 
-            /* 은은한 용의 형상을 배경에 추가 */
+            /* 은은하고 거대한 용의 실루엣 배경 */
             background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
-                              url('https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=2000');
+                              url('https://images.unsplash.com/photo-1615678815958-5910c6811c25?q=80&w=2000');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -25,145 +27,110 @@
             font-family: 'Pretendard', sans-serif; 
             display: flex; 
             justify-content: center; 
-            padding: 40px 20px; 
-            margin: 0;
         }
 
-        .container { max-width: 800px; width: 100%; }
+        .container { max-width: 800px; width: 100%; position: relative; z-index: 1; }
 
         h1 { 
             color: #ffffff; 
             text-align: center; 
             margin-bottom: 40px; 
-            letter-spacing: 6px; 
+            letter-spacing: 8px; 
             font-weight: 200;
-            text-shadow: 0 0 15px rgba(255,255,255,0.2);
+            text-transform: uppercase;
         }
 
         .input-card { 
             background: var(--card-bg); 
-            padding: 40px 30px; 
-            border-radius: 20px; 
-            border: 1px solid #222; 
+            padding: 40px; 
+            border-radius: 0px; /* 각진 디자인으로 더 고급스럽게 */
+            border: 1px solid #333; 
             margin-bottom: 30px; 
             text-align: center;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(15px);
         }
 
         .input-group label { 
             display: block; 
-            margin-bottom: 20px; 
+            margin-bottom: 25px; 
             color: #fff; 
-            font-size: 1.1rem;
-            letter-spacing: 1px;
+            font-size: 1rem;
+            letter-spacing: 2px;
         }
 
         input[type="date"], input[type="time"] { 
-            padding: 15px; 
-            border-radius: 8px; 
-            border: 1px solid #333; 
-            background: rgba(0,0,0,0.6); 
+            padding: 12px; 
+            border-radius: 0; 
+            border: 1px solid #444; 
+            background: rgba(255,255,255,0.05); 
             color: #fff; 
             font-size: 1rem; 
             margin: 5px;
             outline: none;
         }
 
-        .options { 
-            margin: 20px 0; 
-            color: #888; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 10px; 
-            font-size: 0.9rem;
-        }
-
         button { 
             width: 100%; 
-            max-width: 400px;
-            padding: 18px; 
-            background: #ffffff; 
-            border: none; 
-            color: #000; 
+            max-width: 300px;
+            padding: 15px; 
+            background: none; 
+            border: 1px solid #fff; 
+            color: #fff; 
             font-weight: bold; 
             cursor: pointer; 
-            border-radius: 10px; 
-            font-size: 1.1rem; 
-            transition: all 0.3s ease; 
-            margin-top: 15px;
-            letter-spacing: 1px;
+            font-size: 0.9rem; 
+            transition: all 0.5s; 
+            margin-top: 20px;
+            letter-spacing: 3px;
         }
 
         button:hover { 
-            background: #eeeeee; 
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255,255,255,0.1);
+            background: #fff; 
+            color: #000;
         }
 
         #result { 
             background: var(--card-bg); 
-            padding: 50px 40px; 
-            border-radius: 20px; 
+            padding: 40px; 
             display: none; 
-            line-height: 2.1; 
+            line-height: 2.2; 
             white-space: pre-wrap; 
-            border: 1px solid #222; 
+            border: 1px solid #333; 
             margin-top: 20px;
-            backdrop-filter: blur(15px);
-            color: #ddd;
-        }
-
-        .loading { 
-            text-align: center; 
-            display: none; 
-            color: #fff; 
-            margin: 30px 0; 
-            font-style: italic;
-            letter-spacing: 1px;
-        }
-
-        h2 { 
-            color: #ffffff; 
-            border-bottom: 1px solid #333; 
-            padding-bottom: 15px; 
-            margin-top: 45px; 
-            font-weight: 400;
+            backdrop-filter: blur(20px);
         }
 
         .saju-box { 
-            background: rgba(255,255,255,0.05); 
-            padding: 20px; 
-            border-radius: 12px; 
+            padding: 15px; 
+            border: 1px solid rgba(255,255,255,0.3); 
             color: #ffffff; 
-            font-weight: bold; 
-            margin-bottom: 35px; 
-            border: 1px solid rgba(255,255,255,0.2); 
+            margin-bottom: 30px; 
             text-align: center;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
+
+        .loading { text-align: center; display: none; color: #fff; margin: 20px 0; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>운명의 기록 : AI 사주 솔루션</h1>
+    <h1>DESTINY LOG</h1>
     
     <div class="input-card">
         <div class="input-group">
-            <label>당신이 태어난 순간을 입력해주세요</label>
+            <label>생년월일시를 입력하십시오</label>
             <input type="date" id="birthDate">
             <input type="time" id="birthTime">
         </div>
-        <div class="options">
+        <div style="margin: 15px 0; font-size: 0.8rem; color: #666;">
             <input type="checkbox" id="noTime" onchange="document.getElementById('birthTime').disabled = this.checked"> 
-            <label for="noTime" style="cursor:pointer;">태어난 시간을 모릅니다</label>
+            <label for="noTime" style="cursor:pointer;">시간을 모름</label>
         </div>
-        <button onclick="runAnalysis()">운명의 데이터 해독하기</button>
+        <button onclick="runAnalysis()">ANALYZE</button>
     </div>
 
-    <div id="loading" class="loading">📡 우주의 기운을 불러오고 있습니다...</div>
+    <div id="loading" class="loading">해독 중...</div>
     <div id="result"></div>
 </div>
 
@@ -177,9 +144,7 @@
         const resultDiv = document.getElementById('result');
         const loading = document.getElementById('loading');
 
-        if (!dateInput) return alert("날짜를 선택해주세요.");
-        if (!noTime && !timeInput) return alert("시간을 입력하거나 '시간 모름'을 체크해주세요.");
-
+        if (!dateInput) return alert("날짜를 선택하십시오.");
         loading.style.display = 'block';
         resultDiv.style.display = 'none';
 
@@ -190,7 +155,7 @@
 
             const solar = Solar.fromYmdHms(y, m, d, hh, mm, 0);
             const eightChar = solar.getLunar().getEightChar();
-            const sajuStr = `[년주] ${eightChar.getYear()}${eightChar.getYearZhi()} [월주] ${eightChar.getMonth()}${eightChar.getMonthZhi()} [일주] ${eightChar.getDay()}${eightChar.getDayZhi()} [시주] ${noTime ? '생시불명' : eightChar.getTimeGan() + eightChar.getTimeZhi()}`;
+            const sajuStr = `[年] ${eightChar.getYear()}${eightChar.getYearZhi()} [月] ${eightChar.getMonth()}${eightChar.getMonthZhi()} [日] ${eightChar.getDay()}${eightChar.getDayZhi()} [時] ${noTime ? '不明' : eightChar.getTimeGan() + eightChar.getTimeZhi()}`;
 
             const response = await fetch(RENDER_SERVER_URL, {
                 method: 'POST',
@@ -198,17 +163,11 @@
                 body: JSON.stringify({ sajuStr: sajuStr })
             });
 
-            if (!response.ok) throw new Error("서버 응답 실패");
-
             const data = await response.json();
-            
-            resultDiv.innerHTML = `<div class="saju-box">${sajuStr}</div>` + 
-                                  data.text.replace(/## /g, '<h2>').replace(/##/g, '');
+            resultDiv.innerHTML = `<div class="saju-box">${sajuStr}</div>` + data.text.replace(/## /g, '<h2 style="color:#fff; border-bottom:1px solid #333; padding-bottom:10px;">').replace(/##/g, '');
             resultDiv.style.display = 'block';
-
         } catch (e) {
-            console.error(e);
-            alert("분석 서버가 깨어나는 중일 수 있습니다. 1분만 기다렸다가 다시 '실행' 버튼을 눌러주세요!");
+            alert("연결 실패. 다시 시도하십시오.");
         } finally {
             loading.style.display = 'none';
         }
